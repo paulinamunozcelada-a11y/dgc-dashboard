@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Do Good Capital — Deal Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&amp;family=DM+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#F4EFE4;--ink:#18180F;--forest:#264D3B;--forest-dim:rgba(38,77,59,0.09);
+  --gold:#A67C3A;--gold-dim:rgba(166,124,58,0.11);--muted:#7A7568;
+  --border:rgba(24,24,15,0.10);--border-med:rgba(24,24,15,0.20);--white:#FDFAF4;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:'DM Mono',monospace;font-weight:300;overflow-x:hidden}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 48px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--cream);z-index:50}
+.logo{font-size:10px;letter-spacing:.24em;font-weight:500;text-transform:uppercase}
+.logo em{font-style:normal;color:var(--forest)}
+.nav-r{display:flex;align-items:center;gap:24px}
+.nav-links{display:flex;gap:22px;list-style:none}
+.nav-links a{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--forest);color:var(--cream);padding:8px 16px;text-decoration:none;transition:background .15s}
+.nav-cta:hover{background:var(--ink)}
+
+/* HERO */
+.hero{padding:56px 48px 0;max-width:1280px;margin:0 auto}
+.eyebrow{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.eyebrow span{margin:0 8px;opacity:.35}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,72px);font-weight:300;line-height:.95;letter-spacing:-.01em;margin-bottom:12px}
+.hero-title em{font-style:italic;color:var(--forest)}
+.hero-sub{font-size:10px;letter-spacing:.12em;color:var(--muted);line-height:1.8;max-width:560px;margin-bottom:40px}
+
+/* GLOBAL STATS */
+.global-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:0}
+.g-stat{background:var(--white);padding:20px 22px}
+.g-stat-lbl{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.g-stat-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;line-height:1;color:var(--ink)}
+.g-stat-n em{font-style:normal;color:var(--forest)}
+.g-stat-sub{font-size:8.5px;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+
+/* VIZ SECTION */
+.viz-section{padding:40px 48px 0;max-width:1280px;margin:0 auto;border-top:1px solid var(--border)}
+.viz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.viz-title{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.viz-toggles{display:flex;gap:8px}
+.viz-toggle{padding:5px 12px;border:1px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s}
+.viz-toggle.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.viz-charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.viz-chart{background:var(--white);padding:24px;min-height:220px}
+.viz-chart-title{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+/* Bar chart */
+.bar-rows{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:grid;grid-template-columns:110px 1fr 58px;align-items:center;gap:10px}
+.bar-lbl{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{background:var(--border);height:5px;overflow:hidden}
+.bar-fill{height:100%;transition:width .5s ease}
+.bar-fill.forest{background:var(--forest)}
+.bar-fill.gold{background:var(--gold)}
+.bar-amt{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;color:var(--forest);text-align:right}
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut-svg{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.donut-leg-item{display:flex;align-items:center;gap:7px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.donut-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Timeline */
+.timeline-bars{display:flex;flex-direction:column;gap:8px}
+.tl-row{display:grid;grid-template-columns:48px 1fr 52px;align-items:center;gap:8px}
+.tl-lbl{font-size:8.5px;letter-spacing:.1em;color:var(--muted)}
+.tl-track{background:var(--border);height:5px;overflow:hidden;position:relative}
+.tl-fill{height:100%;background:var(--forest);transition:width .5s ease}
+.tl-amt{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:var(--forest);text-align:right}
+
+/* MAIN */
+.main{max-width:1280px;margin:0 auto;padding:0 48px 80px}
+.filter-section{padding:28px 0 0;border-top:1px solid var(--border);margin-top:40px}
+.filter-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.filter-lbl{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.filter-btn{padding:6px 12px;border:1px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s}
+.filter-btn:hover{color:var(--ink);border-color:var(--border-med)}
+.filter-btn.active{border-color:var(--forest);color:var(--forest);background:var(--forest-dim)}
+.filter-btn.stage-active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.results-count{font-size:8.5px;letter-spacing:.12em;color:var(--muted);margin-bottom:20px}
+.results-count em{color:var(--ink);font-style:normal;font-weight:500}
+
+/* TABS */
+.tabs-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:0 0 22px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.tabs-lbl{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.tab{display:flex;align-items:center;gap:5px;padding:6px 13px;border:1px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--ink);border-color:var(--border-med)}
+.tab.active{background:var(--forest);color:var(--cream);border-color:var(--forest)}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.65}
+.tab .ct{font-size:7.5px;opacity:.65;margin-left:1px}
+
+/* PANEL */
+.panel{display:none}.panel.active{display:block;animation:up .25s ease}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.domain-hdr{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.domain-hdr h2{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.5vw,44px);font-weight:300;line-height:1}
+.domain-hdr h2 em{font-style:italic;color:var(--forest)}
+.domain-desc{font-size:10.5px;color:var(--muted);line-height:1.75;margin-top:8px;max-width:640px;letter-spacing:.02em}
+.domain-meta{display:flex;gap:20px;flex-shrink:0;text-align:right}
+.dm{text-align:right}
+.dm-lbl{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.dm-n{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--forest);line-height:1}
+.dm-sub{font-size:8px;letter-spacing:.08em;color:var(--muted);margin-top:2px}
+
+/* THREE-COL */
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);margin-bottom:28px}
+.tcol{border-right:1px solid var(--border)}.tcol:last-child{border-right:none}
+.tcol-hdr{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--white)}
+.tcol-hdr-lbl{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.tcol-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.insight-card{font-size:10.5px;line-height:1.72;color:var(--muted);letter-spacing:.02em;padding:12px 14px}
+.insight-card strong{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink);margin-bottom:5px}
+.insight-card.area{background:var(--forest-dim);border-left:2px solid var(--forest)}
+.insight-card.oq{background:var(--gold-dim);border-left:2px solid var(--gold)}
+
+/* DEALS */
+.deals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px}
+.deal{background:var(--white);border:1px solid var(--border);padding:18px 20px;transition:border-color .15s}
+.deal:hover{border-color:var(--border-med)}
+.deal[data-hidden="true"]{display:none}
+.deal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.deal-co{font-size:10px;letter-spacing:.14em;font-weight:500;text-transform:uppercase;color:var(--ink);line-height:1.3;text-decoration:none;transition:color .15s}
+.deal-co:hover{color:var(--forest)}
+.badge{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;background:var(--forest-dim);color:var(--forest);flex-shrink:0;margin-left:10px;white-space:nowrap}
+.badge.seed{background:var(--gold-dim);color:var(--gold)}
+.badge.late{background:rgba(24,24,15,0.06);color:var(--muted)}
+.deal-amount{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--forest);line-height:1;margin-bottom:3px}
+.deal-meta{font-size:8.5px;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.deal-links{display:flex;gap:10px;margin-bottom:10px}
+.deal-link{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--forest);text-decoration:none;border-bottom:1px solid rgba(38,77,59,0.25);padding-bottom:1px;transition:border-color .15s}
+.deal-link:hover{border-color:var(--forest)}
+.deal-link.news{color:var(--gold);border-color:rgba(166,124,58,0.25)}
+.deal-link.news:hover{border-color:var(--gold)}
+.deal-desc{font-size:10.5px;line-height:1.72;color:var(--muted);letter-spacing:.02em;padding-top:10px;border-top:1px solid var(--border)}
+.deal-why{font-size:10.5px;line-height:1.7;color:var(--ink);letter-spacing:.02em;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}
+.why-lbl{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:4px}
+.unicorn{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);padding:2px 7px;margin-left:8px;vertical-align:middle}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:22px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-l{font-size:8.5px;letter-spacing:.1em;color:var(--muted)}
+.footer-r a{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--forest);text-decoration:none}
+
+@media(max-width:900px){
+  nav{padding:12px 18px}.nav-links{display:none}
+  .hero,.viz-section,.main{padding-left:18px;padding-right:18px}
+  .global-stats{grid-template-columns:repeat(2,1fr)}
+  .viz-charts{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr}
+  .tcol{border-right:none;border-bottom:1px solid var(--border)}.tcol:last-child{border-bottom:none}
+  .domain-hdr{grid-template-columns:1fr}.domain-meta{justify-content:flex-start;text-align:left}.dm{text-align:left}
+  footer{padding:16px 18px}
+}
+
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:6px;cursor:pointer;padding:8px;background:none;border:1px solid var(--border);width:38px;height:38px}
+.hamburger span{display:block;width:18px;height:2px;background:var(--ink)}
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#F4EFE4;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);text-decoration:none}
+.mobile-menu a:hover{color:var(--forest)}
+.mobile-close{position:absolute;top:20px;right:24px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'DM Mono',monospace}
+@media(max-width:900px){
+  .hamburger{display:flex}
+  .nav-links{display:none!important}
+}
+</style>
+</head>
+<body>
+<nav>
+<div class="logo">Do Good <em>Capital</em></div>
+<div class="nav-r">
+<ul class="nav-links">
+<li><a href="#dashboard">Dashboard</a></li>
+<li><a href="#investment-areas">Investment Areas</a></li>
+<li><a href="#thesis">Thesis &amp; About</a></li>
+<li><a href="https://dgoodcapital.substack.com/archive" target="_blank">Editions</a></li>
+</ul>
+<a class="nav-cta" href="https://dgoodcapital.substack.com/" target="_blank">Subscribe →</a>
+<button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+</div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <button onclick="toggleMenu()" style="position:absolute;top:20px;right:24px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7A7568;cursor:pointer;background:none;border:none;font-family:'DM Mono',monospace">Close ×</button>
+  <a href="#dashboard" onclick="toggleMenu()" style="font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#18180F;text-decoration:none;padding:8px 0;border-bottom:1px solid rgba(24,24,15,0.1);width:200px;text-align:center">Dashboard</a>
+  <a href="#investment-areas" onclick="toggleMenu()" style="font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#18180F;text-decoration:none;padding:8px 0;border-bottom:1px solid rgba(24,24,15,0.1);width:200px;text-align:center">Investment Areas</a>
+  <a href="#thesis" onclick="toggleMenu()" style="font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#18180F;text-decoration:none;padding:8px 0;border-bottom:1px solid rgba(24,24,15,0.1);width:200px;text-align:center">Thesis &amp; About</a>
+  <a href="https://dgoodcapital.substack.com/archive" target="_blank" onclick="toggleMenu()" style="font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#18180F;text-decoration:none;padding:8px 0;border-bottom:1px solid rgba(24,24,15,0.1);width:200px;text-align:center">Editions</a>
+  <a href="https://dgoodcapital.substack.com/" target="_blank" onclick="toggleMenu()" style="font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:#264D3B;text-decoration:none;padding:8px 0;width:200px;text-align:center">Subscribe →</a>
+</div>
+<script>
+function toggleMenu(){
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+</script>
+<div class="hero" id="dashboard">
+<p class="eyebrow">Impact VC Intelligence <span>·</span> Access Lens <span>·</span> 2026 YTD</p>
+<h1 class="hero-title">Do Good Capital<br/><em>Deal Dashboard</em></h1>
+<p class="hero-sub">Tracking capital allocation at the edges — where the biggest market opportunities and the greatest unmet needs are the same thing. Every venture deal in social impact, curated by Do Good Capital.</p>
+<div class="global-stats">
+<div class="g-stat" id="stat-raised"><p class="g-stat-lbl">Total Raised YTD</p><p class="g-stat-n">$<em>2.2</em>B</p><p class="g-stat-sub">Across all sectors tracked</p></div>
+<div class="g-stat" id="stat-deals"><p class="g-stat-lbl">Deals Tracked</p><p class="g-stat-n"><em>63</em></p><p class="g-stat-sub">2026 YTD</p></div>
+<div class="g-stat"><p class="g-stat-lbl">Sectors Covered</p><p class="g-stat-n"><em>8</em></p><p class="g-stat-sub">Health, Women's, EdTech, Workforce, Fintech, Housing, Legal, Civic</p></div>
+<div class="g-stat"><p class="g-stat-lbl">Largest Round</p><p class="g-stat-n" style="font-size:22px"><a href="https://www.vestwell.com/" target="_blank" style="color:var(--forest);text-decoration:none"><em>Vestwell</em></a></p><p class="g-stat-sub">$385M Series E · Fintech</p><div style="display:flex;gap:10px;margin-top:8px"><a href="https://www.vestwell.com/" target="_blank" style="font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--forest);text-decoration:none;border-bottom:1px solid rgba(38,77,59,0.25)">Website →</a><a href="https://www.prnewswire.com/news-releases/vestwell-raises-385-million-to-power-the-future-of-saving-302691042.html" target="_blank" style="font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(166,124,58,0.25)">Announcement →</a></div></div>
+<div class="g-stat" id="stat-sector"><p class="g-stat-lbl">Most Active Sector</p><p class="g-stat-n" style="font-size:22px"><em>Health</em></p><p class="g-stat-sub">27 deals · ~$916M raised</p></div>
+</div>
+</div>
+<!-- VIZ -->
+<div class="viz-section">
+<div class="viz-header">
+<p class="viz-title">Capital intelligence — 2026 YTD</p>
+<div class="viz-toggles">
+<button class="viz-toggle active" onclick="showViz('sector')">By Sector</button>
+<button class="viz-toggle" onclick="showViz('stage')">By Stage</button>
+<button class="viz-toggle" onclick="showViz('month')">By Month</button>
+</div>
+</div>
+<div class="viz-charts">
+<!-- LEFT: bar chart (sector or stage) -->
+<div class="viz-chart" id="vc-left">
+<p class="viz-chart-title" id="vc-left-title">Capital raised by sector ($M)</p>
+<div class="bar-rows" id="sector-bars">
+<div class="bar-row"><span class="bar-lbl">Digital Health</span><div class="bar-track"><div class="bar-fill forest" style="width:100%"></div></div><span class="bar-amt">$916M</span></div>
+<div class="bar-row"><span class="bar-lbl">Fintech</span><div class="bar-track"><div class="bar-fill forest" style="width:47%"></div></div><span class="bar-amt">$435M</span></div>
+<div class="bar-row"><span class="bar-lbl">Education</span><div class="bar-track"><div class="bar-fill forest" style="width:38%"></div></div><span class="bar-amt">$347M</span></div>
+<div class="bar-row"><span class="bar-lbl">Women's Health</span><div class="bar-track"><div class="bar-fill gold" style="width:21%"></div></div><span class="bar-amt">$197M</span></div>
+<div class="bar-row"><span class="bar-lbl">Workforce</span><div class="bar-track"><div class="bar-fill forest" style="width:16%"></div></div><span class="bar-amt">$144M</span></div>
+<div class="bar-row"><span class="bar-lbl">Housing</span><div class="bar-track"><div class="bar-fill gold" style="width:10%"></div></div><span class="bar-amt">$93M</span></div>
+<div class="bar-row"><span class="bar-lbl">CivicTech</span><div class="bar-track"><div class="bar-fill forest" style="width:3%"></div></div><span class="bar-amt">$28M</span></div>
+<div class="bar-row"><span class="bar-lbl">Legal Tech</span><div class="bar-track"><div class="bar-fill gold" style="width:1%"></div></div><span class="bar-amt">$5M</span></div>
+</div>
+<div class="bar-rows" id="stage-bars" style="display:none">
+<div class="bar-row"><span class="bar-lbl">Series A</span><div class="bar-track"><div class="bar-fill forest" style="width:100%"></div></div><span class="bar-amt">22 deals</span></div>
+<div class="bar-row"><span class="bar-lbl">Series B+</span><div class="bar-track"><div class="bar-fill forest" style="width:60%"></div></div><span class="bar-amt">13 deals</span></div>
+<div class="bar-row"><span class="bar-lbl">Seed</span><div class="bar-track"><div class="bar-fill gold" style="width:55%"></div></div><span class="bar-amt">12 deals</span></div>
+<div class="bar-row"><span class="bar-lbl">Pre-Seed</span><div class="bar-track"><div class="bar-fill gold" style="width:20%"></div></div><span class="bar-amt">5 deals</span></div>
+<div class="bar-row"><span class="bar-lbl">Growth</span><div class="bar-track"><div class="bar-fill forest" style="width:18%"></div></div><span class="bar-amt">4 deals</span></div>
+<div class="bar-row"><span class="bar-lbl">Other</span><div class="bar-track"><div class="bar-fill gold" style="width:10%"></div></div><span class="bar-amt">7 deals</span></div>
+</div>
+</div>
+<!-- MIDDLE: donut -->
+<div class="viz-chart" id="vc-mid">
+<p class="viz-chart-title" id="vc-mid-title">Deal count by sector</p>
+<div class="donut-wrap" id="donut-sector">
+<svg class="donut-svg" height="120" viewbox="0 0 120 120" width="120">
+<circle cx="60" cy="60" fill="none" r="45" stroke="#264D3B" stroke-dasharray="169 114" stroke-dashoffset="0" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#A67C3A" stroke-dasharray="51 232" stroke-dashoffset="-169" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#3D6B52" stroke-dasharray="57 226" stroke-dashoffset="-220" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#7A5C3A" stroke-dasharray="51 232" stroke-dashoffset="-277" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#B8933F" stroke-dasharray="19 264" stroke-dashoffset="-328" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<text fill="#264D3B" font-family="Cormorant Garamond" font-size="18" text-anchor="middle" x="60" y="55">63</text>
+<text fill="#7A7568" font-family="DM Mono" font-size="7" text-anchor="middle" x="60" y="70">deals</text>
+</svg>
+<div class="donut-legend">
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#264D3B"></div>Digital Health (27)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#A67C3A"></div>Education (9)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#3D6B52"></div>Workforce (8)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#7A5C3A"></div>Women's Health (8)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#B8933F"></div>Other (11)</div>
+</div>
+</div>
+<div class="donut-wrap" id="donut-stage" style="display:none">
+<svg class="donut-svg" height="120" viewbox="0 0 120 120" width="120">
+<circle cx="60" cy="60" fill="none" r="45" stroke="#264D3B" stroke-dasharray="123 160" stroke-dashoffset="0" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#3D6B52" stroke-dasharray="73 210" stroke-dashoffset="-123" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#A67C3A" stroke-dasharray="67 216" stroke-dashoffset="-196" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#B8933F" stroke-dasharray="28 255" stroke-dashoffset="-263" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<circle cx="60" cy="60" fill="none" r="45" stroke="#7A7568" stroke-dasharray="22 261" stroke-dashoffset="-291" stroke-width="18" transform="rotate(-90 60 60)"></circle>
+<text fill="#264D3B" font-family="Cormorant Garamond" font-size="18" text-anchor="middle" x="60" y="55">63</text>
+<text fill="#7A7568" font-family="DM Mono" font-size="7" text-anchor="middle" x="60" y="70">deals</text>
+</svg>
+<div class="donut-legend">
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#264D3B"></div>Series A (22)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#3D6B52"></div>Series B+ (13)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#A67C3A"></div>Seed (12)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#B8933F"></div>Pre-Seed (5)</div>
+<div class="donut-leg-item"><div class="donut-leg-dot" style="background:#7A7568"></div>Growth / Other (11)</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: timeline -->
+<div class="viz-chart" id="vc-right">
+<p class="viz-chart-title">Deals by month published</p>
+<div class="timeline-bars">
+<div class="tl-row"><span class="tl-lbl">Jan</span><div class="tl-track"><div class="tl-fill" style="width:38%"></div></div><span class="tl-amt">8 deals</span></div>
+<div class="tl-row"><span class="tl-lbl">Feb</span><div class="tl-track"><div class="tl-fill" style="width:52%"></div></div><span class="tl-amt">11 deals</span></div>
+<div class="tl-row"><span class="tl-lbl">Mar</span><div class="tl-track"><div class="tl-fill" style="width:100%"></div></div><span class="tl-amt">21 deals</span></div>
+<div class="tl-row"><span class="tl-lbl">Apr</span><div class="tl-track"><div class="tl-fill" style="width:67%"></div></div><span class="tl-amt">14 deals</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN -->
+<div class="main">
+<div class="filter-section">
+<div class="filter-row">
+<span class="filter-lbl">Sector</span>
+<button class="filter-btn active" onclick="filterSector(this,'all')">All</button>
+<button class="filter-btn" onclick="filterSector(this,'health')">Digital Health</button>
+<button class="filter-btn" onclick="filterSector(this,'womens')">Women's &amp; Maternal</button>
+<button class="filter-btn" onclick="filterSector(this,'education')">Education</button>
+<button class="filter-btn" onclick="filterSector(this,'workforce')">Workforce</button>
+<button class="filter-btn" onclick="filterSector(this,'fintech')">Fintech</button>
+<button class="filter-btn" onclick="filterSector(this,'housing')">Housing</button>
+<button class="filter-btn" onclick="filterSector(this,'legal')">Legal Tech</button>
+<button class="filter-btn" onclick="filterSector(this,'civic')">CivicTech</button>
+</div>
+<div class="filter-row">
+<span class="filter-lbl">Stage</span>
+<button class="filter-btn active" onclick="filterStage(this,'all')">All Stages</button>
+<button class="filter-btn" onclick="filterStage(this,'pre-seed')">Pre-Seed</button>
+<button class="filter-btn" onclick="filterStage(this,'seed')">Seed</button>
+<button class="filter-btn" onclick="filterStage(this,'series-a')">Series A</button>
+<button class="filter-btn" onclick="filterStage(this,'series-b')">Series B</button>
+<button class="filter-btn" onclick="filterStage(this,'growth')">Series C+ / Growth</button>
+<button class="filter-btn" onclick="filterStage(this,'other')">Other</button>
+</div>
+<p class="results-count" id="results-count"><em>63</em> deals shown</p>
+</div>
+<!-- ALL DEALS FLAT GRID (filtered) -->
+<div class="deals-grid" id="all-deals">
+<!-- DIGITAL HEALTH -->
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="chw">
+<div class="deal-top"><a class="deal-co" href="https://www.zocalo.health/" target="_blank">Zócalo Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$15M</p><p class="deal-meta">EO Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.zocalo.health/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/zocalo-health-15-million-series-a-raised-to-scale-community-based-primary-care-model/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Community-based primary care for high-need Medicaid populations organized around promotoras de salud embedded in communities, integrated with primary care, behavioral health, and care coordination.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>The promotora model works because trust is built inside the community, not imported into it.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://keebler.health/" target="_blank">Keebler Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$16M</p><p class="deal-meta">Flare Capital Partners · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://keebler.health/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/keebler-health-16-million-series-a-expands-ai-platform-unlocking-unstructured-clinical-data/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-enabled risk adjustment platform analyzing EHRs and unstructured patient data to surface undocumented chronic conditions affecting provider reimbursement under value-based care contracts.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>When chronic conditions go undocumented, providers serving high-acuity, low-income populations get underpaid — making Medicaid-serving organizations less viable.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.ethermed.ai/" target="_blank">Ethermed</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$8.5M</p><p class="deal-meta">Enfield Capital + Blue Marlin · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.ethermed.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://www.citybiz.co/article/834663/ethermed-raises-8-5m-to-ease-healthcare-paperwork/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Healthcare AI automating prior authorization workflows for health systems in value-based arrangements.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Prior authorization delays disproportionately affect Medicaid and safety-net patients who have fewer resources to appeal denials.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth" data-theme="glp1">
+<div class="deal-top"><a class="deal-co" href="https://www.knownwell.co/" target="_blank">Knownwell</a><span class="badge">Growth</span></div>
+<p class="deal-amount">$25M</p><p class="deal-meta">a16z + CVS Health Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.knownwell.co/" target="_blank">Website →</a></div>
+<p class="deal-desc">Longitudinal care model for patients with obesity and comorbidities. Primary care, behavioral health, and metabolic services under one roof. Accepts commercial, Medicare, and Medicaid — no membership fees.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Building the care infrastructure that makes GLP-1 ROI legible for payers — the delivery layer the BALANCE Model needs.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.joyfulhealth.com/" target="_blank">Joyful Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$17M</p><p class="deal-meta">CRV · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.joyfulhealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/joyful-health-17-million-series-a-expands-ai-platform-to-recover-unpaid-healthcare-claims/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered revenue recovery platform unifying fragmented financial data across EHR systems, billing platforms, and payer portals into a single infrastructure layer.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>When under-resourced clinics recover the revenue they're owed, they stay financially viable and open to the communities they serve.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="pre-seed" data-theme="trades">
+<div class="deal-top"><a class="deal-co" href="https://www.ultralighthealth.com/" target="_blank">Ultralight</a><span class="badge seed">Pre-Seed</span></div>
+<p class="deal-amount">$9.3M</p><p class="deal-meta">The General Partnership · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.ultralighthealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.axios.com/pro/health-tech-deals/2026/04/13/ultralight-9-million-longevity-ehr" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-native operating system for preventive and personalized medicine clinics. Consolidates EHR, charting, and practice management into a single system for independent clinicians.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Can preventive care platforms eventually reach patients who need it most — not just the premium health market?</div>
+</div>
+<div class="deal" data-sector="health" data-stage="seed" data-theme="clinical-ai">
+<div class="deal-top"><a class="deal-co" href="https://jiminihealth.com/" target="_blank">Jimini Health</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$17M</p><p class="deal-meta">Behavioral Health AI · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://jiminihealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.webwire.com/ViewPressRel.asp?aId=352606" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI behavioral health platform. Sage is a supervised member of the care team across the full spectrum of acuity, compliant with federal and state regulations, with clinicians in control at all times.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Built for regulated environments — keeps clinicians in the loop. The benchmark for Medicaid-compatible mental health AI.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://www.mystoria.com/" target="_blank">myStoria</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$1.6M</p><p class="deal-meta">Graphite Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.mystoria.com/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/mystoria-1-625-million-raised-for-ai-powered-reproductive-health-platform-expansion/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Digital health platform helping patients navigate complex reproductive care. Proprietary Context Engine aggregates medical records, symptoms, and appointment history into a structured AI-ready format.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Reproductive health has the longest diagnostic delays and highest dismissal rates — burdens that fall disproportionately on women of color.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="clinical-ai">
+<div class="deal-top"><a class="deal-co" href="https://www.joinblossomhealth.com/" target="_blank">Blossom Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$20M</p><p class="deal-meta">Headline · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.joinblossomhealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/blossom-health-announces-20m-to-bring-ai-operating-system-to-psychiatrists-and-patients-nationwide-302725794.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI operating system for psychiatry. Pairs licensed psychiatrists with AI copilots for diagnosis and treatment. AI agents handle billing, scheduling, and between-visit patient check-ins.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Keeps psychiatrists in control while eliminating the administrative burden that consumes half their working hours.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-b">
+<div class="deal-top"><a class="deal-co" href="https://www.doctronic.ai/" target="_blank">Doctronic</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$40M</p><p class="deal-meta">Abstract + Lightspeed · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.doctronic.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://www.businesswire.com/news/home/20260324814372/en/Doctronic-Raises-%2440M-Series-B-Following-Breakthrough-as-First-AI-to-Legally-Renew-Prescriptions-in-the-U.S." target="_blank">Announcement →</a></div>
+<p class="deal-desc">Free, 24/7 HIPAA-compliant AI consultations with access to licensed physicians. First AI system trusted to make clinical decisions autonomously.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Expands access and affordability — but loses the human-in-the-loop framing. One to follow closely as regulation tightens.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="pre-seed" data-theme="clinical-ai">
+<div class="deal-top"><a class="deal-co" href="https://www.trianglehealth.com/" target="_blank">Triangle Health</a><span class="badge seed">Pre-Seed</span></div>
+<p class="deal-amount">$4M</p><p class="deal-meta">Signal Noise Ratio · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.trianglehealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/after-a-surprise-brain-cancer-diagnosis-a-tech-veteran-raised-4m-to-build-the-ai-health-tool-he-wished-hed-had-302723632.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI health navigation giving patients complete medical history, surfacing clinical trials and treatment options, paired with licensed physician review and telehealth consultation.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Democratizes complex diagnosis research. Doctor-in-the-loop ensures patients never act on AI alone.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://understoodcare.com/" target="_blank">Understood Care</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$8.4M</p><p class="deal-meta">Rethink Education + Zeal Capital · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://understoodcare.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/understood-care-raises-8-4m-to-scale-ai-native-infrastructure-layer-for-patient-advocacy-302713107.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-native patient advocacy platform expanding human advocates helping Medicare patients navigate care.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Patient advocacy for Medicare has always been a luxury. Understood Care is building the infrastructure to democratize it.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.conduithealth.com/" target="_blank">Conduit Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$17M</p><p class="deal-meta">Drive Capital · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.conduithealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/conduit-health-17-million-raised-for-insurance-covered-medical-supplies-platform-expansion/amp/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Insurance-covered medical supply platform for Medicare and Medicaid patients. Vertically integrated model expanding across payer networks.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Medical supply access is a hidden barrier for low-income and elderly patients.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://turquoise.health/" target="_blank">Turquoise Health</a><span class="badge">Series C</span></div>
+<p class="deal-amount">$40M</p><p class="deal-meta">Oak HC/FT · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://turquoise.health/" target="_blank">Website →</a></div>
+<p class="deal-desc">Healthcare pricing and payment platform expanding transparent, real-time transaction infrastructure for providers, payers, and patients.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Price transparency is foundational to informed patient decision-making — especially for uninsured and underinsured patients.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://latenthealth.com/" target="_blank">Latent Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$80M</p><p class="deal-meta">Spark Capital + Transformation Capital · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://latenthealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/latent-health-80-million-raised-for-clinical-ai-platform-advancing-medication-access/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI platform automating prior authorization for large health systems at scale.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Prior authorization is a documented care access barrier. Latent is building the automation layer at health system scale.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="clinical-ai">
+<div class="deal-top"><a class="deal-co" href="https://www.amigo.ai/" target="_blank">Amigo AI</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$11M</p><p class="deal-meta">Madrona · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.amigo.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://www.businesswire.com/news/home/20260310898882/en/Amigo-AI-Raises-%2411M-Series-A-to-Train-Clinical-AI-Agents-Like-Doctors" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Platform for building and training patient-facing clinical AI agents. 3M+ autonomous patient encounters with 100% safety pass rate. Integrates with Epic, Oracle Health, and Athenahealth.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>"Digital residency" model trains agents on simulated scenarios before real patients. Supervised clinical AI — humans in the loop by design.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://growtherapy.com/" target="_blank">Grow Therapy</a><span class="badge">Series D</span></div>
+<p class="deal-amount">$150M</p><p class="deal-meta">$3B valuation · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://growtherapy.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/grow-therapy-raises-150-million-in-series-d-as-it-solidifies-new-flagship-partnerships-302702388.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Mental health platform with 26K therapists. Coverage expanded from 75 to 125+ insurers including Medicare and Medicaid.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Handles credentialing, billing, and scheduling for providers — expanding therapist supply available to Medicaid and Medicare patients.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-b">
+<div class="deal-top"><a class="deal-co" href="https://greatergoodhealth.com/" target="_blank">Greater Good Health</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$20.5M</p><p class="deal-meta">Value-based primary care · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://greatergoodhealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.businesswire.com/news/home/20260305730643/en/Greater-Good-Health-Raises-Series-B-to-Improve-Outcomes-and-Better-Manage-Medical-Spend" target="_blank">Announcement →</a></div>
+<p class="deal-desc">NP-led primary care clinics in Montana and Idaho for seniors where physician shortages limit access.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Geographic access barriers for Medicare populations in physician shortage states — a problem few VCs are funding.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth" data-theme="vbc">
+<div class="deal-top"><a class="deal-co" href="https://honesthealth.com/" target="_blank">Honest Health</a><span class="badge">Growth</span></div>
+<p class="deal-amount">$140M</p><p class="deal-meta">VBC enablement · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://honesthealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/honest-health-raises-140-million-to-advance-value-based-care-for-health-systems-newspring-leads-investment-302698027.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">VBC enablement for health systems. Technology-enabled care coordination, quality improvement, and actionable insights for providers navigating risk models.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Health-system-facing VBC infrastructure co-founded by former CMMI director — policy lineage matters here.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://callbaba.com/" target="_blank">Baba</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$6.5M</p><p class="deal-meta">General Catalyst · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://callbaba.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.callbaba.com/blog/baba-raises-seed-round-from-general-catalyst" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Medicare and Medicare Advantage patient advocacy platform. Nurse and social worker advocates coordinate care for beneficiaries across the fragmented system.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Wealthy families have always hired private patient advocates. Baba makes expert navigation accessible to Medicare beneficiaries who can't pay out of pocket.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.joincoralcare.com/" target="_blank">Coral Care</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$13M</p><p class="deal-meta">Haymaker Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.joincoralcare.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/coral-care-raises-13-million-series-a-to-expand-access-to-in-home-pediatric-therapy-nationwide-302692970.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">In-home pediatric therapy connecting families with licensed SLPs, OTs, and PTs through insurance-covered services.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Underscores the massive unmet need for accessible developmental therapy — especially for Medicaid families in rural areas.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="chw">
+<div class="deal-top"><a class="deal-co" href="https://www.somethings.com/" target="_blank">Somethings</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$19.2M</p><p class="deal-meta">Catalio Capital · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.somethings.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.morningstar.com/news/pr-newswire/20260210ny84318/somethings-raises-192m-in-series-a-funding-to-expand-peer-support-for-todays-youth" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Digital mental health for teens 13–26 via Certified Peer Specialists through Medicaid health plans, state agencies, 200+ schools. No waitlists. 65% reduction in depression among participating youth.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Youth suicide up 62%. Somethings reaches young people through channels they already trust — school and Medicaid.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://talkiatry.com/" target="_blank">Talkiatry</a><span class="badge">Series D</span></div>
+<p class="deal-amount">$210M</p><p class="deal-meta">Perceptive Advisors · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://talkiatry.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/talkiatry-raises-oversubscribed-210m-series-d-to-expand-nations-largest-full-stack-psychiatry-provider-302685678.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Nation's largest private employer of psychiatrists (800+ full-time). 3M patient visits. In-network with 100+ insurers covering 170M lives.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>In-network psychiatry infrastructure for 170M insured Americans — not just those who can pay out of pocket.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://garnerhealth.com/" target="_blank">Garner Health</a><span class="badge">Series D</span></div>
+<p class="deal-amount">$118M</p><p class="deal-meta">Kleiner Perkins · $1.35B val <span class="unicorn">🦄</span></p>
+<div class="deal-links"><a class="deal-link" href="https://garnerhealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/garner-health-raises-118-million-to-close-the-healthcare-quality-and-cost-gap-reaches-1-35-billion-valuation-302680953.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Platform helping patients find top providers using 320M+ patient records. Layers onto existing health plans, covering deductibles and co-pays for top-performing doctors.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Employees pay 80% less out-of-pocket to see the best doctors. Employers see 12% reduction in total healthcare spend in year one.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="vbc">
+<div class="deal-top"><a class="deal-co" href="https://www.chambercardio.com/" target="_blank">Chamber</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$60M</p><p class="deal-meta">Frist Cressey Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.chambercardio.com/" target="_blank">Website →</a></div>
+<p class="deal-desc">Cardiology-focused AI platform for value-based care. 39% drop in chronic heart failure hospitalizations; 6.1% reduction in total cost of care. 7.3% decrease in ER admissions.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Validates the specialist VBC + AI model. Expect similar plays in oncology and nephrology.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="vbc">
+<div class="deal-top"><a class="deal-co" href="https://graici.com/" target="_blank">Graici</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$7.5M</p><p class="deal-meta">Santé Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://graici.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/graici-leading-the-way-in-medicaid-renewal-and-redetermination-secures-7-5-million-series-a-led-by-sante-ventures-302677089.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI data platform for public benefits. Consent-based agentic AI helping individuals maintain Medicaid coverage and providing state and health plans intelligence to improve outcomes.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Medicaid unwinding left millions uninsured. Automating renewals is critical for low-income populations. 10/10 on potential impact.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://lotus.ai/" target="_blank">Lotus Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$35M</p><p class="deal-meta">Kleiner Perkins + CRV · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://lotus.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://lotus.ai/news/lotus-raised-41m" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered primary care platform. Medical AI helps doctors support patients with multilingual and 24/7 care at no direct cost to patients via a sponsorship revenue model.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Sponsorship revenue — not patient payments — is the unlock for free primary care access.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.salvohealth.com/" target="_blank">Salvo Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$8.5M</p><p class="deal-meta">ManchesterStory · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.salvohealth.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.salvohealth.com/blog/january-2026-fundraising-announcement" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Virtual GI care platform enabling brick-and-mortar GI practices to deliver continuous wraparound care via AI-enhanced hybrid model.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>GI conditions require months of wraparound care, not quick fixes. Salvo builds the continuity layer.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-b">
+<div class="deal-top"><a class="deal-co" href="https://www.getanswersnow.com/" target="_blank">AnswersNow</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$40M</p><p class="deal-meta">HealthQuest Capital · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.getanswersnow.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.globenewswire.com/news-release/2026/01/21/3222658/0/en/AnswersNow-Completes-40M-Series-B-to-Expand-BCBA-Driven-AI-Enabled-Autism-Therapy.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Virtual ABA therapy achieving clinically proven outcomes in one-sixth the hours of traditional therapy via AI-enabled platform connecting BCBAs with families.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>ABA therapy is expensive and hard to access. AnswersNow reduces the time and cost while maintaining clinical quality.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="pre-seed">
+<div class="deal-top"><a class="deal-co" href="https://joinxella.com/" target="_blank">Xella Health</a><span class="badge seed">Pre-Seed</span></div>
+<p class="deal-amount">$3.7M</p><p class="deal-meta">Precursor Ventures · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://joinxella.com/" target="_blank">Website →</a><a class="deal-link news" href="https://joinxella.com/pages/press" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Women's telehealth company launching Spring 2026. AI-powered multi-omic testing making precision medicine and concierge care accessible to all women.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Precision medicine for women has been a luxury product. Xella is building the access pathway from the ground up.</div>
+</div>
+<!-- WOMEN'S HEALTH -->
+<div class="deal" data-sector="womens" data-stage="series-a" data-theme="doula">
+<div class="deal-top"><a class="deal-co" href="https://www.simplifed.com/" target="_blank">SimpliFed</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$10.8M</p><p class="deal-meta">Morningside + Hesperia · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.simplifed.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.globenewswire.com/news-release/2026/04/07/3269239/0/en/SimpliFed-Raises-Over-10-Million-in-an-Oversubscribed-Series-A-to-Expand-SimpliFed-s-Maternal-Health-Ecosystem.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Virtual maternal health platform connecting families with lactation consultants and maternal health providers. In-network with major commercial plans and Medicaid. On track to serve 5% of all US births in 2026.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Building the infrastructure to close the maternal health gap — starting with feeding support and extending into the full perinatal window, inside the insurance system.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://heyflora.com/" target="_blank">Flora Fertility</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">C$5M</p><p class="deal-meta">Manchester Story · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://heyflora.com/" target="_blank">Website →</a><a class="deal-link news" href="https://femtechinsider.com/flora-fertility-raises-5m-for-individually-owned-fertility-insurance/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Portable reproductive care insurance. AI-underwritten policy covering diagnostics, medications, IUI, and IVF. Follows women across jobs, career breaks, and freelance stints — ages 20–34.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Most fertility coverage is an employer perk that vanishes when someone changes jobs. Flora makes it something women can own on their own terms.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="seed" data-theme="doula">
+<div class="deal-top"><a class="deal-co" href="https://flourishcommunitycare.com/" target="_blank">Flourish Care</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$5.7M</p><p class="deal-meta">Zeal Capital Partners · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://flourishcommunitycare.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.citybiz.co/article/821372/flourish-care-raises-5-7m-seed-round-from-zeal-capital-collide-others/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Maternal healthcare platform scaling its doula network nationwide. Matches patients with doulas based on cultural and language preferences. Primarily serving Medicaid patients. In-network with UnitedHealthcare.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Cultural and language matching for doulas is the access differentiator that most Medicaid patients have never had.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="seed" data-theme="doula">
+<div class="deal-top"><a class="deal-co" href="https://heymalama.co/" target="_blank">Malama Health</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$9.2M</p><p class="deal-meta">Acumen America + $3.2M NIH/CA grants · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://heymalama.co/" target="_blank">Website →</a><a class="deal-link news" href="https://pulse2.com/malama-health-9-2-million-raised-to-scale-doula-led-maternal-care-for-medicaid-patients-nationwide/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Doula-led maternal care for Medicaid. Doula-Care Navigators attend births and stay with women through the full postpartum year, escalating clinical risk signals in real time.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>The full postpartum year model — not just the birth — is the intervention closest to where maternal mortality actually occurs.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="other" data-theme="doula">
+<div class="deal-top"><a class="deal-co" href="https://www.nadiacare.com/" target="_blank">Nadia Care</a><span class="badge">Growth</span></div>
+<p class="deal-amount">$12M</p><p class="deal-meta">Valtruis + national payer · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://www.nadiacare.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.globenewswire.com/news-release/2026/03/16/3256395/0/en/Nadia-Care-Raises-12-Million-to-Expand-Community-Centered-Maternal-Care-Model-Across-the-U-S.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Hybrid maternal care (formerly Cayaba Care). Maternity Navigators, RNs, and doulas providing in-home and virtual support in DC, Maryland, and Tennessee.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Payer co-investment signals real insurance integration. Hybrid in-home and virtual model meets patients where they are.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://yuzu.health/" target="_blank">Yuzu Health</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$35M</p><p class="deal-meta">General Catalyst · Women's Health</p>
+<div class="deal-links"><a class="deal-link" href="https://yuzu.health/" target="_blank">Website →</a><a class="deal-link news" href="https://www.citybiz.co/article/828463/yuzu-health-raises-35-million-series-a/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Healthcare TPA. Built the administrative backbone of health insurance into a unified, white-labeled system powering claims, payments, and member administration for health plans.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Lowers the cost of launching nontraditional plan designs — creating a pathway for more accessible employer-sponsored coverage.</div>
+</div>
+<div class="deal" data-sector="womens" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://www.joinmidi.com/" target="_blank">Midi Health</a><span class="badge">Series D</span></div>
+<p class="deal-amount">$100M</p><p class="deal-meta">Goodwater Capital · $1B val <span class="unicorn">🦄</span></p>
+<div class="deal-links"><a class="deal-link" href="https://www.joinmidi.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.morningstar.com/news/business-wire/20260203432254/midi-health-surpasses-1b-valuation-igniting-a-new-era-for-womens-health" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Women's midlife healthcare for menopause and perimenopause. 50M+ US women in the market. Medicaid expansion on the roadmap.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Expanded access to menopause care at scale — but subsequently drew scrutiny for supplement revenue and unsubstantiated claims. The Midi case is a DGC recurring reference on access vs. outcomes.</div>
+</div>
+<!-- EDUCATION -->
+<div class="deal" data-sector="education" data-stage="other">
+<div class="deal-top"><a class="deal-co" href="https://learningspring.com/home" target="_blank">Learning Spring</a><span class="badge seed">Early Stage</span></div>
+<p class="deal-amount">Undisclosed</p><p class="deal-meta">Stand Together Ventures Lab · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://learningspring.com/home" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/stand-together-ventures-lab-invests-in-learningspring-as-school-choice-becomes-a-defining-issue-for-american-families-302734938.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">School choice management platform connecting families, schools, and states across ESA, voucher, and scholarship programs across 34 states.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>School choice expanded to 34 states but the administrative infrastructure hasn't kept pace. Learning Spring builds the operational layer that makes policy accessible to all families.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="seed" data-theme="trades">
+<div class="deal-top"><a class="deal-co" href="https://www.flashpasseducation.com/" target="_blank">Flashpass</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$4.1M</p><p class="deal-meta">J2 Ventures · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://www.flashpasseducation.com/" target="_blank">Website →</a><a class="deal-link news" href="https://techfundingnews.com/flashpass-4-1m-seed-j2-ventures-workforce-ai/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Government-partnered workforce reskilling platform. Embeds with state governments before contracts go out to bid, then provides curriculum, platform, and placement tools.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Building the infrastructure to turn public reskilling dollars into real job placements — not just completions.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="growth">
+<div class="deal-top"><a class="deal-co" href="https://askchapter.org/" target="_blank">Chapter</a><span class="badge">Series E</span></div>
+<p class="deal-amount">$100M</p><p class="deal-meta">Generation IM · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://askchapter.org/" target="_blank">Website →</a><a class="deal-link news" href="https://www.businesswire.com/news/home/20260409159904/en/Chapter-Raises-%24100-Million-Series-E-to-Continue-Building-the-Trust-Layer-Between-Seniors-and-Technology-in-the-Age-of-AI" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered Medicare navigation. Reviews every Medicare plan nationwide and pairs AI with licensed advisors for personalized, unbiased recommendations.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Medicare selection is one of the most consequential financial decisions in retirement. Chapter builds infrastructure to make it less predatory.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://www.pathfindercard.com/" target="_blank">Pathfinder</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$4M</p><p class="deal-meta">Gradient + Reach Capital · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://www.pathfindercard.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.reachcapital.com/resources/thought-leadership/why-we-invested-pathfinder/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Education savings account navigation platform expanding beyond Arizona into new states. Helps families navigate 21+ distinct ESA programs accounting for $13B in funding.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Busy parents can't navigate 21 distinct ESA programs alone. Pathfinder builds the access layer that makes school choice real for all families.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="other">
+<div class="deal-top"><a class="deal-co" href="https://www.busright.com/" target="_blank">BusRight</a><span class="badge">Growth</span></div>
+<p class="deal-amount">$30M</p><p class="deal-meta">Volition Capital · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://www.busright.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/busright-raises-30m-to-power-the-largest-mass-transit-system-302717021.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Student transportation platform for K-12 school districts. Routing, GPS tracking, and parent communication tools. Most fleets start each morning short 15–30% of drivers.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>20M+ students depend on the school bus daily. In underserved communities, a cancelled route can be a crisis for a working parent.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="other" data-theme="ai-education">
+<div class="deal-top"><a class="deal-co" href="https://subject.com/" target="_blank">Subject</a><span class="badge">Growth</span></div>
+<p class="deal-amount">$28M</p><p class="deal-meta">Vistara Growth · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://subject.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/subject-secures-28m-investment-led-by-vistara-growth-to-accelerate-ai-powered-k12-curriculum-and-online-learning-platform-302695051.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered K-12 curriculum platform. Accredited courses, credit recovery, multilingual AI tools, and teacher-of-record AI used by ~360 districts.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Giving schools — regardless of zip code — the tools to support credit recovery. Critical for underserved schools with limited budgets.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="growth" data-theme="ai-education">
+<div class="deal-top"><a class="deal-co" href="https://preply.com/" target="_blank">Preply</a><span class="badge">Series D</span></div>
+<p class="deal-amount">$150M</p><p class="deal-meta">WestCap · $1.2B val <span class="unicorn">🦄</span></p>
+<div class="deal-links"><a class="deal-link" href="https://preply.com/" target="_blank">Website →</a><a class="deal-link news" href="https://preply.com/en/blog/preply-raises-150-million-to-shape-the-future-of-education-through-human-led-ai-enhanced-learning/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI and human tutor marketplace advancing AI and data capabilities. Strong signal that capital is backing enhancement — not complete replacement — of human tutors.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Human tutors + AI augmentation outperforms either alone. Preply's model validates the human-in-the-loop thesis for education.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="series-a" data-theme="ai-education">
+<div class="deal-top"><a class="deal-co" href="https://boldvoice.com/" target="_blank">BoldVoice</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$21M</p><p class="deal-meta">Matrix Partners · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://boldvoice.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/boldvoice-raises-21m-series-a-to-give-a-billion-non-native-english-speakers-their-own-ai-voice-coach-302671777.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered accent and voice coaching for non-native English speakers. Proprietary speech models accelerating global expansion across 190+ countries.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Speakers with foreign accents are less likely to be promoted. This is an economic mobility intervention at the intersection of language access and career advancement.</div>
+</div>
+<div class="deal" data-sector="education" data-stage="series-a" data-theme="ai-education">
+<div class="deal-top"><a class="deal-co" href="https://www.gocloudforce.com/" target="_blank">Cloudforce</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$10M</p><p class="deal-meta">Owl Ventures · Education</p>
+<div class="deal-links"><a class="deal-link" href="https://www.gocloudforce.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/cloudforce-secures-10m-series-a-from-owl-ventures-and-microsoft-to-democratize-safe-equitable-ai-in-education-healthcare-and-beyond-302656775.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Data sovereignty and privacy compliance infrastructure (FERPA, HIPAA, GDPR) for AI deployment. Enables institutions to deploy private AI without compromising data.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Data sovereignty is the unlock for institutional AI adoption at scale — especially for schools and hospitals.</div>
+</div>
+<!-- WORKFORCE -->
+<div class="deal" data-sector="workforce" data-stage="series-b">
+<div class="deal-top"><a class="deal-co" href="https://www.clasp.com/" target="_blank">Clasp</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$20M</p><p class="deal-meta">Crosslink Capital + Digitalis · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://www.clasp.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.businesswire.com/news/home/20260326942993/en/Clasp-Raises-%2420M-Series-B-to-Scale-ROTC-Model-for-Clinician-Retention-in-Healthcare" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Medical student loan repayment platform for healthcare employers. Replaces sign-on bonuses with tenure-based loan repayment. 2.5x higher retention rates vs. traditional models.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Student debt shapes where clinicians work and how long they stay — particularly for clinicians from lower-income backgrounds who carry the most debt.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://www.nextwork.org/" target="_blank">NextWork</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$4.45M</p><p class="deal-meta">Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://www.nextwork.org/" target="_blank">Website →</a><a class="deal-link news" href="https://www.citybiz.co/article/813907/nextwork-raises-4-45m-seed-round/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Proof-of-work portfolio model for learning AI skills. 190K+ learners across 190+ countries. Proof-of-work replaces credential requirements that lock out non-traditional candidates.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>As AI reshapes work, proof-of-work models could expand access to higher-wage careers for workers who can't afford traditional credentials.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://humand.co/" target="_blank">Humand</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$66M</p><p class="deal-meta">Kaszek + Goodwater Capital · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://humand.co/" target="_blank">Website →</a><a class="deal-link news" href="https://humand.co/en/series-a/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI operating system for deskless workforces. Mobile-first platform for time-off, performance feedback, benefits access, training, and AI-powered assistant. 80% of global workforce is deskless.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Deskless workers have been digitally excluded for decades. Humand closes a fundamental equity gap in workplace technology.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="seed" data-theme="trades">
+<div class="deal-top"><a class="deal-co" href="https://pelgo.ai/" target="_blank">Pelgo</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$5.5M</p><p class="deal-meta">Flybridge Capital Partners · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://pelgo.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://www.citybiz.co/article/804629/pelgo-raises-5-5m-seed-round-led-by-flybridge/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI-powered career transition platform pairing AI tools with human counselors for job placement and reskilling. Serves laid-off workers, recent graduates, and employees pivoting in an AI-driven economy.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Democratizes guided career pathing for every displaced worker — not just executives who get outplacement packages.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://take2.ai/" target="_blank">Take2</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$14M</p><p class="deal-meta">Human Capital · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://take2.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/take2-raises-14m-series-a-to-automate-healthcare-recruiting-with-autonomous-ai-agents-302685108.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI agents for healthcare recruiting — sourcing, screening, credential verification, scheduling, and onboarding for major US health systems.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>50%+ turnover in healthcare recruiting. Automating recruiting reduces costs for healthcare employers — enabling them to invest more in clinical capacity.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="seed" data-theme="trades">
+<div class="deal-top"><a class="deal-co" href="https://ando.work/" target="_blank">Ando</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$4M</p><p class="deal-meta">Slow Ventures · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://ando.work/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/ando-secures-new-funding-to-make-hourly-work-more-predictable-302685935.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI forecasting and scheduling for hourly workforce. Builds schedules accounting for workers' childcare, school pickups, commutes, and second jobs.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>A last-minute shift change cascades into lost childcare and missed school pickups. Predictable schedules are a financial stability intervention for hourly workers.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://pasito.ai/" target="_blank">Pasito</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$21M</p><p class="deal-meta">Insight Partners · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://pasito.ai/" target="_blank">Website →</a><a class="deal-link news" href="https://techfundingnews.com/pasito-raises-21m-series-a-ai-benefits-workspace/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">AI workspace for group health, life, and retirement benefits. Automates benefits data aggregation and plan creation with 98% accuracy.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Ensures employees can make informed decisions about benefits — critical for workers who lack HR guidance.</div>
+</div>
+<div class="deal" data-sector="health" data-stage="series-a" data-theme="vbc">
+<div class="deal-top"><a class="deal-co" href="https://atlasoncpartners.com/" target="_blank">Atlas Oncology Partners</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$28M</p><p class="deal-meta">Flare Capital Partners · Digital Health</p>
+<div class="deal-links"><a class="deal-link" href="https://atlasoncpartners.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.morningstar.com/news/business-wire/20260211142103/atlas-oncology-partners-raises-28m-series-a-to-scale-value-based-oncology-care" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Value-based oncology enablement embedding interdisciplinary care teams into community oncology practices, assuming full medical cost risk from payers.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Specialist VBC model for oncology. Community oncology reaches patients who can't access academic medical centers.</div>
+</div>
+<!-- FINTECH -->
+<div class="deal" data-sector="fintech" data-stage="seed" data-theme="savings">
+<div class="deal-top"><a class="deal-co" href="https://www.joindebbie.com/" target="_blank">Debbie</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$5.3M</p><p class="deal-meta">Trustage Ventures + Reseda Group · Fintech</p>
+<div class="deal-links"><a class="deal-link" href="https://www.joindebbie.com/" target="_blank">Website →</a><a class="deal-link news" href="https://techli.com/debbie-flips-the-loyalty-model-with-rewards-2-0-pays-cash-for-savings-and-debt-payoff/11070/" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Personal finance platform rewarding users for saving and paying down debt. 200K+ users, $2.3M in rewards paid, $149M saved across 11 bank and credit union partnerships.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>A working model — not a projection. Behavioral incentives tied to measurable financial progress.</div>
+</div>
+<div class="deal" data-sector="fintech" data-stage="growth" data-theme="savings">
+<div class="deal-top"><a class="deal-co" href="https://www.vestwell.com/" target="_blank">Vestwell</a><span class="badge">Series E</span></div>
+<p class="deal-amount">$385M</p><p class="deal-meta">Blue Owl Capital + Sixth Street Growth · Fintech</p>
+<div class="deal-links"><a class="deal-link" href="https://www.vestwell.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/vestwell-raises-385-million-to-power-the-future-of-saving-302691042.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Savings infrastructure platform. Retirement plans, emergency savings, student loan repayment, 529s, and ABLE accounts through a single layer. 2M+ savers. Embedded with 40+ state programs.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Closing the $50 trillion savings gap by embedding savings into payroll and benefits systems so it works for everyone — not just those with corporate benefits packages.</div>
+</div>
+<div class="deal" data-sector="fintech" data-stage="growth" data-theme="savings">
+<div class="deal-top"><a class="deal-co" href="https://ascentfunding.com/" target="_blank">Ascent</a><span class="badge">Series C</span></div>
+<p class="deal-amount">$45M</p><p class="deal-meta">Outcomes-based lending · Fintech</p>
+<div class="deal-links"><a class="deal-link" href="https://ascentfunding.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/ascent-closes-45mm-series-c-financing-amid-growing-opportunity-in-the-student-lending-landscape-302692224.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Education financing evaluating post-graduation earning potential rather than current credit scores. Serves graduate school, skilled trades, aviation, and healthcare. $1.5B+ disbursed to 168K+ families.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Outcomes-based lending inverts the model where you need wealth to build wealth — opening high-wage career pathways for credit-invisible borrowers.</div>
+</div>
+<!-- HOUSING -->
+<div class="deal" data-sector="housing" data-stage="series-b">
+<div class="deal-top"><a class="deal-co" href="https://www.ownwell.com/" target="_blank">Ownwell</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$50M</p><p class="deal-meta">Alpha Edison + Mercato Partners · Housing</p>
+<div class="deal-links"><a class="deal-link" href="https://www.ownwell.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/ownwell-raises-50m-launches-national-service-to-streamline-property-tax-appeals-and-make-home-ownership-more-affordable-302692103.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Property tax appeal platform. 1M+ appeals processed, 86% success rate, avg. $774 saved annually. In Texas alone: 200K+ properties from owners who had never protested before.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>74% of homeowners worry about rising property taxes but only 22% ever appeal. Ownwell democratizes expertise previously reserved for investment firms.</div>
+</div>
+<div class="deal" data-sector="housing" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://oroimpact.com/" target="_blank">Oro</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$3M</p><p class="deal-meta">Slauson &amp; Co · Housing</p>
+<div class="deal-links"><a class="deal-link" href="https://oroimpact.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/oro-raises-3-million-and-launches-housing-wellness-platform-to-bring-homeownership-and-housing-benefits-to-the-workplace-302671848.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Employer homeownership and housing wellness benefit. Down payment assistance, rent reporting to boost credit, housing guidance. 8 employees became first-time homeowners through pilot.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Companies expanded benefits for healthcare, fertility, and student loans. Housing has remained absent. Oro builds the infrastructure to change that.</div>
+</div>
+<div class="deal" data-sector="workforce" data-stage="series-b" data-theme="glp1">
+<div class="deal-top"><a class="deal-co" href="https://getbenepass.com/" target="_blank">Benepass</a><span class="badge">Series B</span></div>
+<p class="deal-amount">$40M</p><p class="deal-meta">Centana Growth Partners · Workforce</p>
+<div class="deal-links"><a class="deal-link" href="https://getbenepass.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/benepass-raises-40m-series-b-to-help-employers-redesign-benefits-for-rising-healthcare-costs-302666704.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Benefits capital management platform for flexible pre- and post-tax benefits. Key expansions include HSA offerings and Specialty HRAs for GLP-1 medications.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Employer-sponsored GLP-1 benefits expansion is coming. Benepass builds the benefits infrastructure that enables it across company sizes.</div>
+</div>
+<!-- LEGAL TECH -->
+<div class="deal" data-sector="legal" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://rasa-legal.com/" target="_blank">Rasa Legal</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$5M</p><p class="deal-meta">Rethink Education · Legal Tech</p>
+<div class="deal-links"><a class="deal-link" href="https://rasa-legal.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.prnewswire.com/news-releases/rasa-legal-raises-5-million-late-seed-round-to-scale-criminal-record-clearance-nationwide-302709738.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Legal technology platform for criminal record sealing and expungement. 26K people assessed for eligibility. 5K cases cleared since 2022.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>1 in 3 Americans has a criminal record. That stat sits at the root of persistent employment, housing, and education access gaps.</div>
+</div>
+<!-- CIVIC TECH -->
+<div class="deal" data-sector="civic" data-stage="series-a">
+<div class="deal-top"><a class="deal-co" href="https://www.nationgraph.com/" target="_blank">NationGraph</a><span class="badge">Series A</span></div>
+<p class="deal-amount">$18M</p><p class="deal-meta">Menlo Ventures · CivicTech</p>
+<div class="deal-links"><a class="deal-link" href="https://www.nationgraph.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.globenewswire.com/news-release/2026/02/25/3244553/0/en/NationGraph-Raises-18M-Series-A-to-Help-Businesses-Predict-and-Win-Public-Sector-Sales.html" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Intelligence platform for public sector sales. Indexes 110K+ government entities across 4M+ websites to surface buying signals, RFPs, and procurement history.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>Democratizes the institutional knowledge that previously only incumbents had — lowering the barrier for mission-aligned companies to compete for public contracts.</div>
+</div>
+<div class="deal" data-sector="civic" data-stage="seed">
+<div class="deal-top"><a class="deal-co" href="https://modveon.com/" target="_blank">Modveon</a><span class="badge seed">Seed</span></div>
+<p class="deal-amount">$10M</p><p class="deal-meta">CivicTech</p>
+<div class="deal-links"><a class="deal-link" href="https://modveon.com/" target="_blank">Website →</a><a class="deal-link news" href="https://www.morningstar.com/news/business-wire/20260209554727/modveon-raises-10-million-to-build-a-verified-operating-system-for-governments-and-citizens" target="_blank">Announcement →</a></div>
+<p class="deal-desc">Identity-first platform enabling verified, closed-loop digital interactions between governments and citizens at societal scale. Initial government deployments underway.</p>
+<div class="deal-why"><p class="why-lbl">Why it matters</p>A verified government-citizen OS could reduce friction in accessing public benefits — particularly for populations that fall through the cracks of fragmented digital government infrastructure.</div>
+</div>
+</div><!-- /all-deals -->
+</div><!-- /main -->
+<!-- INVESTMENT AREAS SECTION -->
+<div id="investment-areas" style="max-width:1280px;margin:0 auto;padding:64px 48px 0">
+<p style="font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">From the newsletter</p>
+<h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,56px);font-weight:300;line-height:1;margin-bottom:12px">Investment <em style="font-style:italic;color:var(--forest)">Areas</em></h2>
+<p style="font-size:10.5px;color:var(--muted);line-height:1.8;max-width:600px;margin-bottom:40px;letter-spacing:.02em">The structural themes DGC tracks across editions where policy, capital, and unmet need are converging at the same time.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:80px">
+<div onclick="filterTheme('chw')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Healthcare</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('chw')">Community Health Workers</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">CHWs are the most underleveraged members of the healthcare workforce stack and the closest to the patient. Evidence shows CHWs working with Medicaid beneficiaries save $2,500 per enrollee annually. Medicare introduced its first CHW billing code in 2024. Capital is starting to follow.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Zocalo Health · Yuvo Health · Somethings</p>
+</div>
+<div onclick="filterTheme('glp1')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Healthcare</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('glp1')">GLP-1 Access and Infrastructure</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">GLP-1 spending in Medicaid grew from $999M in 2019 to $8.6B in 2024. The BALANCE Model negotiated a $245/month price with Eli Lilly and Novo Nordisk. The missing piece is the analytics and contracting infrastructure that makes GLP-1 ROI legible for payers before generics arrive.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Knownwell · Ilant Health · Benepass</p>
+</div>
+<div onclick="filterTheme('clinical-ai')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Healthcare</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('clinical-ai')">Supervised Clinical AI</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">The real divide in AI therapy is supervised clinical AI vs. unregulated consumer chatbots. A Dartmouth RCT found users of a generative AI therapy tool experienced a 51% reduction in depression symptoms. The companies DGC finds most compelling keep humans in the loop by design.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Jimini Health · Blossom Health · Amigo AI · Triangle Health</p>
+</div>
+<div onclick="filterTheme('doula')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Women's Health</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('doula')">Medicaid Doula Coverage</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">26+ states now reimburse doula services under Medicaid. Women enrolled who used a doula faced a 47% lower risk of C-section and a 29% lower risk of preterm birth. Medicaid funds 40% of all US births and nearly two-thirds of births of Black women.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Flourish Care · Malama Health · Nadia Care · SimpliFed</p>
+</div>
+<div onclick="filterTheme('trades')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Workforce</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('trades')">Skilled Trades Surge</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">Four forces converging: AI buildout generating 4.7M construction jobs, reshoring policy, aging workforce, and semiconductor manufacturing. Electricians projected at +9.5% through 2034. The question is whether training pipelines can keep up with the demand surge.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Ultralight · Flashpass · Pelgo · Ando</p>
+</div>
+<div onclick="filterTheme('ai-education')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Education</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('ai-education')">AI in the Classroom</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">Stanford reviewed 800+ AI education papers -- only 20 had strong enough evidence to draw conclusions. Purpose-built tutoring tools outperform general-purpose chatbots. The equity risk: under-resourced districts end up with the free version of AI that makes learning worse.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Subject · BoldVoice · Preply · Cloudforce</p>
+</div>
+<div onclick="filterTheme('savings')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Fintech</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('savings')">Embedded Savings Infrastructure</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">Since 1989, a dollar in the S&amp;P 500 grew 15x faster than a dollar tied to median wages. The barrier to wealth-building is structural, not behavioral. When saving is the default rather than opt-in, participation soars. The question is who builds those pipes for hourly and gig workers.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Vestwell · Ascent · Debbie</p>
+</div>
+<div onclick="filterTheme('vbc')" style="background:var(--white);border:1px solid var(--border);padding:24px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+<p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--forest);margin-bottom:10px">Healthcare</p>
+<p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:12px;cursor:pointer" onclick="filterTheme('vbc')">Value-Based Care + AI</p>
+<p style="font-size:10.5px;line-height:1.75;color:var(--muted)">AI changes the economics of VBC by enabling continuous monitoring, proactive outreach, and personalized care planning at scale. Chamber proved the model in cardiology with a 39% drop in heart failure hospitalizations. Similar plays are emerging in oncology, nephrology, and behavioral health.</p>
+<p style="font-size:9px;letter-spacing:.1em;color:var(--forest);margin-top:14px;border-top:1px solid var(--border);padding-top:12px">Deals: Chamber · Atlas Oncology · Graici · Honest Health</p>
+</div>
+</div>
+</div>
+<!-- THESIS AND ABOUT SECTION -->
+<div id="thesis" style="border-top:1px solid var(--border);background:var(--white)">
+<div style="max-width:1280px;margin:0 auto;padding:64px 48px;display:grid;grid-template-columns:1fr 1fr;gap:64px">
+<div>
+<p style="font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">The thesis</p>
+<h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);font-weight:300;line-height:1;margin-bottom:24px">Capital allocation <em style="font-style:italic;color:var(--forest)">is</em> social policy.</h2>
+<p style="font-size:11px;line-height:1.85;color:var(--muted);margin-bottom:16px">Every dollar deployed into a venture-backed company is a bet on who gets access to care, to work, to wealth, to opportunity. Do Good Capital covers capital allocation at the edges, where the biggest market opportunities and the greatest unmet needs are the same thing.</p>
+<p style="font-size:11px;line-height:1.85;color:var(--muted);margin-bottom:16px">The contrarian view: AI is going to deepen income inequality. But AI will also make social safety net infrastructure cheaper and more scalable than ever before. The question is not whether AI is good or bad. It is whether the people building it are thinking about who it reaches. Most are not.</p>
+<p style="font-size:11px;line-height:1.85;color:var(--muted)">Impact and returns are not in tension. Reaching more people is how you make money. The biggest market opportunity in healthcare, workforce, and education is the population that traditional capital has systematically ignored.</p>
+</div>
+<div>
+<p style="font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">How deals get selected</p>
+<h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);font-weight:300;line-height:1;margin-bottom:24px">The <em style="font-style:italic;color:var(--forest)">access</em> lens.</h2>
+<p style="font-size:11px;line-height:1.85;color:var(--muted);margin-bottom:20px">Every deal on this dashboard is filtered through one question: does this actually reach the patient, student, or worker who needs it most -- or does it stop at the commercially insured, the college-educated, the urban professional?</p>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="padding:14px 16px;border-left:2px solid var(--forest);background:var(--forest-dim)">
+<p style="font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink);margin-bottom:5px">In-network is not the same as accessible</p>
+<p style="font-size:10.5px;line-height:1.7;color:var(--muted)">Medicaid reimbursement rates are a structural cap on unit economics. The access claim must hold up against the rate schedule, not just the insurance card.</p>
+</div>
+<div style="padding:14px 16px;border-left:2px solid var(--forest);background:var(--forest-dim)">
+<p style="font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink);margin-bottom:5px">Bipartisan, critical, honest</p>
+<p style="font-size:10.5px;line-height:1.7;color:var(--muted)">DGC does not paint policy as purely progressive or conservative. Readers should leave with better judgment, not borrowed conclusions.</p>
+</div>
+<div style="padding:14px 16px;border-left:2px solid var(--gold);background:var(--gold-dim)">
+<p style="font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ink);margin-bottom:5px">Access alone is not enough</p>
+<p style="font-size:10.5px;line-height:1.7;color:var(--muted)">Clinical and economic outcomes must come first. The Midi Health case is a recurring DGC reference: a platform can expand access while delivering questionable value if the revenue model drifts from evidence-based care.</p>
+</div>
+</div>
+<div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+<p style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">About the author</p>
+<p style="font-size:10.5px;line-height:1.8;color:var(--muted)">Do Good Capital is written by Paulina, a finance professional with ~8 years in Debt Capital Markets at HSBC Securities covering Latin American sovereign and corporate bond transactions, including ESG-linked deals. She brings the language and frameworks of traditional capital markets to the impact investing conversation -- and believes that translator is exactly what the space needs.</p>
+<a href="https://dgoodcapital.substack.com/" style="display:inline-block;margin-top:16px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--forest);text-decoration:none;border-bottom:1px solid rgba(38,77,59,0.3);padding-bottom:2px" target="_blank">Read the newsletter</a>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<p class="footer-l">Do Good Capital  ·  2026 YTD  ·  Capital allocation at the edges</p>
+<div class="footer-r"><a href="https://dgoodcapital.substack.com/" target="_blank">Subscribe to the newsletter →</a></div>
+</footer>
+<script>
+// VIZ TOGGLE
+function showViz(type){
+  document.querySelectorAll('.viz-toggle').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(type==='sector'){
+    document.getElementById('sector-bars').style.display='flex';
+    document.getElementById('stage-bars').style.display='none';
+    document.getElementById('vc-left-title').textContent='Capital raised by sector ($M)';
+    document.getElementById('donut-sector').style.display='flex';
+    document.getElementById('donut-stage').style.display='none';
+    document.getElementById('vc-mid-title').textContent='Deal count by sector';
+  } else if(type==='stage'){
+    document.getElementById('sector-bars').style.display='none';
+    document.getElementById('stage-bars').style.display='flex';
+    document.getElementById('vc-left-title').textContent='Deals by stage (count)';
+    document.getElementById('donut-sector').style.display='none';
+    document.getElementById('donut-stage').style.display='flex';
+    document.getElementById('vc-mid-title').textContent='Deal count by stage';
+  } else {
+    document.getElementById('sector-bars').style.display='flex';
+    document.getElementById('stage-bars').style.display='none';
+    document.getElementById('vc-left-title').textContent='Capital raised by sector ($M)';
+    document.getElementById('donut-sector').style.display='flex';
+    document.getElementById('donut-stage').style.display='none';
+    document.getElementById('vc-mid-title').textContent='Deal count by sector';
+  }
+}
+
+
+// THEME FILTER (from Investment Areas)
+let activeTheme = 'all';
+
+function filterTheme(theme) {
+  activeTheme = theme;
+  // Reset sector and stage filters to all
+  activeSector = 'all';
+  activeStage = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-row:first-child .filter-btn').forEach((b,i) => { if(i===0) b.classList.add('active'); });
+  document.querySelectorAll('.filter-row:nth-child(2) .filter-btn').forEach((b,i) => { if(i===0) b.classList.add('active'); });
+
+  const deals = document.querySelectorAll('.deal');
+  let count = 0;
+  deals.forEach(d => {
+    const match = d.dataset.theme === theme;
+    d.style.display = match ? '' : 'none';
+    if (match) count++;
+  });
+  document.getElementById('results-count').innerHTML = `<em>${count}</em> deal${count!==1?'s':''} shown <span style="color:var(--gold);margin-left:8px;cursor:pointer;font-size:8px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid rgba(166,124,58,0.3)" onclick="clearTheme()">Clear filter ×</span>`;
+
+  // Scroll to dashboard
+  document.getElementById('all-deals').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearTheme() {
+  activeTheme = 'all';
+  applyFilters();
+}
+
+// FILTERING
+let activeSector='all', activeStage='all';
+
+function filterSector(btn, val){
+  document.querySelectorAll('.filter-row:first-child .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSector=val;
+  applyFilters();
+}
+
+function filterStage(btn, val){
+  document.querySelectorAll('.filter-row:nth-child(2) .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeStage=val;
+  applyFilters();
+}
+
+function applyFilters(){
+  activeTheme = 'all';
+  const deals=document.querySelectorAll('.deal');
+  let count=0;
+  deals.forEach(d=>{
+    const sectorMatch = activeSector==='all' || d.dataset.sector===activeSector;
+    const stageMatch  = activeStage==='all'  || d.dataset.stage===activeStage;
+    if(sectorMatch && stageMatch){d.style.display='';count++;}
+    else{d.style.display='none';}
+  });
+  document.getElementById('results-count').innerHTML=`<em>${count}</em> deal${count!==1?'s':''} shown`;
+}
+</script>
+<!-- ═══ GOOGLE SHEETS AUTO-LOAD ═══
+  HOW TO CONNECT YOUR SHEET:
+  1. Upload DGC_Deal_Log.xlsx to Google Sheets (File > Import)
+  2. File > Share > Anyone with link > Viewer
+  3. Copy the Sheet ID from the URL: docs.google.com/spreadsheets/d/SHEET_ID/edit
+  4. Paste it below and uncomment the loadFromSheets() call
+  ════════════════════════════════ -->
+<script>
+const SHEET_ID = '1psPyIAvzzWEmaMPkzxqPhtYSiDndNKCfofFdKEp4B6A'; // ← paste your Google Sheet ID here
+const SHEET_NAME = 'DGC_Deal Log';
+
+function formatAmt(m) {
+  if (!m || m === 0) return 'Undisclosed';
+  if (m >= 1000) return '$' + (m/1000).toFixed(1) + 'B';
+  if (m >= 1) return '$' + Math.round(m) + 'M';
+  return '$' + m.toFixed(1) + 'M';
+}
+
+
+
+function updateStats(rows) {
+  const totalDeals = rows.length;
+  let totalRaised = 0;
+  const sectorTotals = {}, sectorCounts = {};
+  rows.forEach(r => {
+    const amt = parseFloat(r[3]) || 0;
+    const sector = r[1] || '';
+    totalRaised += amt;
+    sectorTotals[sector] = (sectorTotals[sector] || 0) + amt;
+    sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+  });
+  let topSector = '', topCount = 0, topAmt = 0;
+  Object.keys(sectorCounts).forEach(s => {
+    if (sectorCounts[s] > topCount) { topCount = sectorCounts[s]; topAmt = sectorTotals[s]; topSector = s; }
+  });
+  const raisedDisplay = totalRaised >= 1000 ? `$<em>${(totalRaised/1000).toFixed(1)}</em>B` : `$<em>${Math.round(totalRaised)}</em>M`;
+  const raisedEl = document.getElementById('stat-raised');
+  const dealsEl = document.getElementById('stat-deals');
+  const sectorEl = document.getElementById('stat-sector');
+  if (raisedEl) raisedEl.querySelector('.g-stat-n').innerHTML = raisedDisplay;
+  if (dealsEl) dealsEl.querySelector('.g-stat-n').innerHTML = `<em>${totalDeals}</em>`;
+  if (sectorEl) {
+    const shortSector = topSector.replace(/women.*maternal/i, "Women's Health").replace("Digital Health", "Health");
+    sectorEl.querySelector('.g-stat-n').innerHTML = `<em>${shortSector}</em>`;
+    sectorEl.querySelector('.g-stat-sub').textContent = `${topCount} deals · ${formatAmt(topAmt)} raised`;
+  }
+  updateBars(sectorTotals, sectorCounts, rows);
+  updateDonuts(sectorCounts);
+}
+
+function updateBars(sectorTotals, sectorCounts, rows) {
+  const maxAmt = Math.max(...Object.values(sectorTotals), 1);
+  document.querySelectorAll('#sector-bars .bar-row').forEach(row => {
+    const lbl = row.querySelector('.bar-lbl').textContent.trim();
+    const sectorKey = Object.keys(sectorTotals).find(k => {
+      if (lbl.toLowerCase().includes('women') && k.toLowerCase().includes('women')) return true;
+      return k.toLowerCase() === lbl.toLowerCase();
+    });
+    const amt = Math.round(sectorTotals[sectorKey] || 0);
+    const fill = row.querySelector('.bar-fill');
+    const amtEl = row.querySelector('.bar-amt');
+    if (fill) fill.style.width = Math.round((amt/maxAmt)*100) + '%';
+    if (amtEl) amtEl.textContent = formatAmt(amt);
+  });
+  const stageCounts = {};
+  document.querySelectorAll('.deal').forEach(d => {
+    const s = d.dataset.stage || 'other';
+    stageCounts[s] = (stageCounts[s] || 0) + 1;
+  });
+  const maxStage = Math.max(...Object.values(stageCounts), 1);
+  const stageKeyMap = {'series a':'series-a','series b+':'series-b','seed':'seed','pre-seed':'pre-seed','growth':'growth','other':'other'};
+  document.querySelectorAll('#stage-bars .bar-row').forEach(row => {
+    const lbl = row.querySelector('.bar-lbl').textContent.trim().toLowerCase();
+    const key = stageKeyMap[lbl] || lbl;
+    const cnt = stageCounts[key] || 0;
+    const fill = row.querySelector('.bar-fill');
+    const amtEl = row.querySelector('.bar-amt');
+    if (fill) fill.style.width = Math.round((cnt/maxStage)*100) + '%';
+    if (amtEl) amtEl.textContent = cnt + ' deals';
+  });
+  const monthCounts = {};
+  const monthOrder = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  rows.forEach(r => {
+    const dateStr = (r[14] || '').trim();
+    if (!dateStr) return;
+    const parts = dateStr.split('/');
+    if (parts.length < 2) return;
+    const monthIdx = parseInt(parts[0]) - 1;
+    if (isNaN(monthIdx) || monthIdx < 0 || monthIdx > 11) return;
+    monthCounts[monthOrder[monthIdx]] = (monthCounts[monthOrder[monthIdx]] || 0) + 1;
+  });
+  const tlContainer = document.querySelector('#vc-right .timeline-bars');
+  if (tlContainer && Object.keys(monthCounts).length > 0) {
+    const maxTl = Math.max(...Object.values(monthCounts), 1);
+    tlContainer.innerHTML = monthOrder.filter(m => monthCounts[m]).map(m => {
+      const cnt = monthCounts[m];
+      return '<div class="tl-row"><span class="tl-lbl">'+m+'</span><div class="tl-track"><div class="tl-fill" style="width:'+Math.round((cnt/maxTl)*100)+'%"></div></div><span class="tl-amt">'+cnt+' deal'+(cnt!==1?'s':'')+'</span></div>';
+    }).join('');
+  }
+}
+
+// Sector slug mapping (matches data-sector on deal cards)
+const SECTOR_SLUG = {};
+// Handle all apostrophe variants for women's health
+function getSectorSlug(s) {
+  if (!s) return 'health';
+  const clean = s.toLowerCase().replace(/[‘’']/g, "'");
+  if (clean.includes('digital health')) return 'health';
+  if (clean.includes('women')) return 'womens';
+  if (clean.includes('education')) return 'education';
+  if (clean.includes('workforce')) return 'workforce';
+  if (clean.includes('fintech')) return 'fintech';
+  if (clean.includes('housing')) return 'housing';
+  if (clean.includes('legal')) return 'legal';
+  if (clean.includes('civic')) return 'civic';
+  return 'health';
+}
+
+const STAGE_SLUG = {
+  'pre-seed': 'pre-seed',
+  'seed': 'seed',
+  'series a': 'series-a',
+  'series b': 'series-b',
+  'series c': 'growth',
+  'series d': 'growth',
+  'series e': 'growth',
+  'growth': 'growth',
+  'other': 'other',
+  'early stage': 'other'
+};
+
+function badgeClass(stage) {
+  const s = (stage||'').toLowerCase();
+  if (s.includes('pre-seed') || s.includes('seed')) return 'badge seed';
+  if (s.includes('series d') || s.includes('series e') || s.includes('growth')) return 'badge late';
+  return 'badge';
+}
+
+function buildDealCard(row) {
+  const [company, sector, stage, amount, currency, lead, month, year,
+         website, announcement, desc, why, unicorn, notes, dateRaw] = row;
+  if (!company) return '';
+  const sectorSlug = getSectorSlug(sector);
+  const stageSlug  = STAGE_SLUG[(stage||'').toLowerCase()] || 'other';
+  const amtDisplay = formatAmt(Number(amount) || 0);
+  const unicornBadge = (unicorn||'').toLowerCase() === 'yes'
+    ? `<span class="unicorn">🦄</span>` : '';
+  const websiteLink = website
+    ? `<a class="deal-link" href="${website}" target="_blank">Website →</a>` : '';
+  const newsLink = announcement
+    ? `<a class="deal-link news" href="${announcement}" target="_blank">Announcement →</a>` : '';
+  return `
+    <div class="deal" data-sector="${sectorSlug}" data-stage="${stageSlug}">
+      <div class="deal-top">
+        <a class="deal-co" href="${website||'#'}" target="_blank">${company}</a>
+        <span class="${badgeClass(stage)}">${stage||''}</span>
+      </div>
+      <p class="deal-amount">${amtDisplay}${unicornBadge}</p>
+      <p class="deal-meta">${lead||''} · ${sector||''}</p>
+      <div class="deal-links">${websiteLink}${newsLink}</div>
+      <p class="deal-desc">${desc||''}</p>
+      <div class="deal-why"><p class="why-lbl">Why it matters</p>${why||''}</div>
+    </div>`;
+}
+
+async function loadFromSheets() {
+  if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') return;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+  console.log('DGC: fetching', url);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) { console.error('DGC: fetch failed', res.status); return; }
+    const text = await res.text();
+    console.log('DGC: got response, length:', text.length);
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
+    if (start === -1) { console.error('DGC: no JSON found'); return; }
+    const json = JSON.parse(text.slice(start, end + 1));
+    const rawRows = json.table.rows;
+    console.log('DGC: total rows from sheet:', rawRows.length);
+    const dataRows = rawRows
+      .map(r => r.c.map(c => {
+        if (!c || c.v === null || c.v === undefined) return '';
+        if (typeof c.v === 'string' && c.v.startsWith('Date(')) return c.f || '';
+        return String(c.v);
+      }))
+      .filter(r => r[0] && r[0].trim());
+    console.log('DGC: data rows after filter:', dataRows.length);
+    const grid = document.getElementById('all-deals');
+    const cards = dataRows.map(r => buildDealCard(r)).filter(Boolean);
+    console.log('DGC: cards built:', cards.length);
+    if (cards.length > 0) {
+      grid.innerHTML = cards.join('');
+      const total = grid.querySelectorAll('.deal').length;
+      document.getElementById('results-count').innerHTML = `<em>${total}</em> deals shown`;
+      updateStats(dataRows);
+    }
+  } catch(e) {
+    console.error('DGC error:', e.message, e);
+  }
+}
+
+
+// ↓ Uncomment this line once you've pasted your Sheet ID above:
+setTimeout(loadFromSheets, 100);
+
+
+function updateDonuts(sectorCounts) {
+  const colors = ['#264D3B','#A67C3A','#3D6B52','#7A5C3A','#B8933F','#7A7568'];
+
+  // --- SECTOR DONUT LEGEND ---
+  const sectorLegend = document.querySelector('#donut-sector .donut-legend');
+  if (sectorLegend) {
+    // Group into top 4 + Other
+    const sorted = Object.entries(sectorCounts).sort((a,b) => b[1]-a[1]);
+    const top4 = sorted.slice(0,4);
+    const otherCount = sorted.slice(4).reduce((s,e) => s+e[1], 0);
+    const items = [...top4];
+    if (otherCount > 0) items.push(['Other', otherCount]);
+    sectorLegend.innerHTML = items.map((e,i) =>
+      `<div class="donut-leg-item"><div class="donut-leg-dot" style="background:${colors[i]}"></div>${e[0].replace(/women.*maternal/i,"Women's Health")} (${e[1]})</div>`
+    ).join('');
+    // Update SVG center text
+    const svg = document.querySelector('#donut-sector svg');
+    if (svg) {
+      const total = Object.values(sectorCounts).reduce((s,v)=>s+v,0);
+      const centerText = svg.querySelector('text:last-child');
+      const centerNum = svg.querySelectorAll('text')[0];
+      if (centerNum) centerNum.textContent = total;
+    }
+  }
+
+  // --- STAGE DONUT LEGEND ---
+  const stageLegend = document.querySelector('#donut-stage .donut-legend');
+  if (stageLegend) {
+    const stageCounts = {};
+    document.querySelectorAll('.deal').forEach(d => {
+      const s = d.dataset.stage || 'other';
+      stageCounts[s] = (stageCounts[s] || 0) + 1;
+    });
+    const stageLabels = {
+      'series-a':'Series A','series-b':'Series B+','seed':'Seed',
+      'pre-seed':'Pre-Seed','growth':'Series C+ / Growth','other':'Other'
+    };
+    const total = Object.values(stageCounts).reduce((s,v)=>s+v,0);
+    stageLegend.innerHTML = Object.entries(stageLabels).map((e,i) => {
+      const cnt = stageCounts[e[0]] || 0;
+      if (!cnt) return '';
+      return `<div class="donut-leg-item"><div class="donut-leg-dot" style="background:${colors[i]}"></div>${e[1]} (${cnt})</div>`;
+    }).filter(Boolean).join('');
+    // Update SVG center text
+    const svg = document.querySelector('#donut-stage svg');
+    if (svg) {
+      const centerNum = svg.querySelectorAll('text')[0];
+      if (centerNum) centerNum.textContent = total;
+    }
+  }
+}
+</script>
+</body>
+</html>
